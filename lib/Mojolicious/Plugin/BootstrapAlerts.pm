@@ -9,7 +9,7 @@ use parent 'Mojolicious::Plugin';
 
 use Mojo::ByteStream;
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 sub register {
     my ($self, $app, $config) = @_;
@@ -22,7 +22,8 @@ sub register {
     } );
 
     $app->helper( notifications => sub {
-        my $c = shift;
+        my $c                    = shift;
+        my $notifications_config = shift;
 
         my $output = '';
 
@@ -54,6 +55,23 @@ sub register {
 
         return Mojo::ByteStream->new( $output );
     } );
+
+    if ( $config && $config->{auto_inject} && ($config->{before} || $config->{after}) ) {
+        $app->hook( after_render => sub {
+            my ($c, $content, $format) = @_;
+
+            return if $format ne 'html';
+
+            my $notifications = $c->notifications->to_string;
+            my $dom           = Mojo::DOM->new( ${$content} );
+            my $element       = $dom->at( $config->{before} || $config->{after} );
+            my @elems         = $config->{before} ? ($notifications, "$element") : ("$element", $notifications);
+            my $replacement   = sprintf "%s%s", @elems;
+            my $temp          = "$element";
+
+            ${$content}       =~ s/\Q$temp\E/$replacement/;
+        });
+    }
 }
 
 1;
@@ -136,6 +154,15 @@ Called when registering the plugin. On creation, the plugin accepts a hashref to
     # load plugin, alerts are dismissable by default
     $self->plugin( 'Bootstrap' );
 
+=head3 Configuration
+
+    $self->plugin( 'Bootstrap' => {
+        dismissable => 0,          # notifications aren't dismissable by default anymore
+        auto_inject => 1,          # inject notifications into your HTML output, no need for "notifications()" anymore
+        after       => $selector,  # CSS selector to find the element after that the notifications should be injected
+        before      => $selector,  # CSS selector to find the element before that the notifications should be injected
+    });
+
 =head1 NOTES
 
 You have to include the Bootstrap CSS and JavaScript yourself!
@@ -143,4 +170,8 @@ You have to include the Bootstrap CSS and JavaScript yourself!
 This plugin uses the I<stash> key C<__NOTIFICATIONS__>, so you should avoid using
 this stash key for your own purposes.
 
+=head2 Known Issues
+
+C<Mojo::DOM> I<html_unescapes> HTML entities when the HTML is parsed. So the injection might fail if you have
+a HTML entity in the element before/after that the notifications are injected.
 

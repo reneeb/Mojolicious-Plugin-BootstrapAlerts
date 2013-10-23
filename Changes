@@ -1,6 +1,13 @@
 History for Mojolicious::Plugin::BootstrapAlerts
 ================================================
 
+0.02  2013-10-23
+
+      + fix bug: when no notify call happened, the app died
+      + add feature: auto_inject, injects the notifications before or after a certain element
+        -> adds a Mojolicious hook (after_render)
+        -> due to a minor weakness of Mojo::DOM there might be problems with auto_inject
+
 0.01  2013-10-23
 
       initial release
