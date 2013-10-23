@@ -1,6 +1,11 @@
 History for Mojolicious::Plugin::BootstrapAlerts
 ================================================
 
+0.03  2013-10-24
+
+      * dist.ini => s/Alert/Alerts/g
+      * return from hook when no element found
+
 0.02  2013-10-23
 
       + fix bug: when no notify call happened, the app died

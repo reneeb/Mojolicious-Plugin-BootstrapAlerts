@@ -9,7 +9,7 @@ use parent 'Mojolicious::Plugin';
 
 use Mojo::ByteStream;
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 sub register {
     my ($self, $app, $config) = @_;
@@ -64,7 +64,14 @@ sub register {
 
             my $notifications = $c->notifications->to_string;
             my $dom           = Mojo::DOM->new( ${$content} );
-            my $element       = $dom->at( $config->{before} || $config->{after} );
+            my $selector      = $config->{before} || $config->{after};
+            my $element       = $dom->at( $selector );
+
+            if ( !$element ) {
+                $c->app->log->debug( 'no matching element found (' . $selector . ')' );
+                return;
+            }
+
             my @elems         = $config->{before} ? ($notifications, "$element") : ("$element", $notifications);
             my $replacement   = sprintf "%s%s", @elems;
             my $temp          = "$element";
