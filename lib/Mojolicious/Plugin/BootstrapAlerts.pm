@@ -26,7 +26,7 @@ sub register {
 
         my $output = '';
 
-        for my $notification ( @{ $c->stash('__NOTIFICATIONS__') } ) {
+        for my $notification ( @{ $c->stash('__NOTIFICATIONS__') || [] } ) {
             my ($type, $message, $config) = @{ $notification };
 
             my ($dismissable_class, $dismissable_button) = ("","");
