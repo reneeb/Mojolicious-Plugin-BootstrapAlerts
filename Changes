@@ -1,6 +1,10 @@
 History for Mojolicious::Plugin::BootstrapAlerts
 ================================================
 
+0.05  2013-10-25
+
+      * minor improvement: return as early as possible
+
 0.04  2013-10-24
 
       * use PodWeaver
