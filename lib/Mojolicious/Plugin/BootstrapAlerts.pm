@@ -9,7 +9,7 @@ use parent 'Mojolicious::Plugin';
 
 use Mojo::ByteStream;
 
-our $VERSION = 0.05;
+our $VERSION = 0.06;
 
 sub register {
     my ($self, $app, $config) = @_;
@@ -162,11 +162,11 @@ Creates the HTML for the notifications. The C<notifications> call in the SYNOPSI
 Called when registering the plugin. On creation, the plugin accepts a hashref to configure the plugin.
 
     # load plugin, alerts are dismissable by default
-    $self->plugin( 'Bootstrap' );
+    $self->plugin( 'BootstrapAlerts' );
 
 =head3 Configuration
 
-    $self->plugin( 'Bootstrap' => {
+    $self->plugin( 'BootstrapAlerts' => {
         dismissable => 0,          # notifications aren't dismissable by default anymore
         auto_inject => 1,          # inject notifications into your HTML output, no need for "notifications()" anymore
         after       => $selector,  # CSS selector to find the element after that the notifications should be injected
