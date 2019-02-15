@@ -9,7 +9,7 @@ use parent 'Mojolicious::Plugin';
 
 use Mojo::ByteStream;
 
-our $VERSION = 0.06;
+our $VERSION = 0.07;
 
 sub register {
     my ($self, $app, $config) = @_;
